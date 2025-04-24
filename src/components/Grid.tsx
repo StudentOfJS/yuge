@@ -1,22 +1,24 @@
 import { useMemo, useRef, useEffect } from "react";
 import { useGridStores } from "../hooks/useGridStores";
+import { type GridColumnInit } from "../state/gridStore";
+import { type ColumnConfig } from "../state/columnResizeManager";
 
 type GridProps = {
     id: string;
-    columns: any;
+    columns: Array<ColumnConfig>;
+    headers: Array<GridColumnInit>;
     data?: any;
     optionalEndpoint?: {url:string, options?: RequestInit};
-    onResize?: () => void;
 }
 
 function Grid({ 
     id, 
-    columns, 
+    columns,
+    headers,
     data,
     optionalEndpoint,
-    onResize 
   }: GridProps) {
-    // Get stores for this grid instance
+    // Get stores for this grid instances
     const { useGridStore, useResizeStore } = useMemo(
       () => useGridStores(id), 
       [id]
@@ -43,20 +45,27 @@ function Grid({
       }
     }, [updateContainerWidth]);
     
-    // Initialize when data and columns are available
+    // Initialize when data and headers are available
     useEffect(() => {
-      if (data && columns) {
-        initializeGrid(data, columns);
-        initializeColumns(columns, containerRef.current?.clientWidth || 1000);
+      if (data && headers) {
+        initializeGrid(headers, data);
       }
-    }, [data, columns]);
-// fetch and initialize data if optionalEndpoint and columns
+    }, [data, headers]);
+
+    // Fetch and initialize data if optionalEndpoint and headers are available
     useEffect(() => {
-        if (optionalEndpoint && columns) {
-            fetchData(columns, optionalEndpoint.url, optionalEndpoint.options);
+        if (optionalEndpoint && headers) {
+            fetchData(headers, optionalEndpoint.url, optionalEndpoint.options);
+        }
+      }, [optionalEndpoint, headers, fetchData]);
+
+      // Setup column widths
+      useEffect(() => {
+        if (columns) {
           initializeColumns(columns, containerRef.current?.clientWidth || 1000);
         }
-      }, [optionalEndpoint, columns, fetchData]);
+      }, [columns, initializeColumns]);
+    
     
     // Render grid with both store states
     return (

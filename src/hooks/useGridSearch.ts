@@ -18,6 +18,7 @@ export function useGridSearch(id: string) {
     }, [searchTerm])
 
     return {
+        query,
         handleSearch
     }
 }
