@@ -1,26 +1,23 @@
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, ReactElement } from "react";
 import { useGridStores } from "../hooks/useGridStores";
 import { type GridColumnInit } from "../state/gridStore";
 import { type ColumnConfig } from "../state/columnResizeManager";
 import { idGenerator } from "../utils";
-import GridHeader from "./GridHeader";
-import GridSearch from "./GridSearch";
-import GridFooter from "./GridFooter";
 
 type GridProps = {
+    children: ReactElement
     columns: Array<ColumnConfig>;
     headers: Array<GridColumnInit>;
-    tableHeight: number
     data?: any;
     optionalEndpoint?: {url:string, options?: RequestInit};
 }
 
 export const storeInstanceID = idGenerator.generate();
 
-function Grid({ 
+function Grid({
+    children,
     columns,
     headers,
-    tableHeight,
     data,
     optionalEndpoint,
   }: GridProps) {
@@ -72,18 +69,17 @@ function Grid({
         }
       }, [columns, initializeColumns]);
     
-    
-    // should probably just return children and allow punters to pick and choose
-    // will circle back to this
     return (
       <div
         className="w-full"
         ref={containerRef}
       >
-        <label htmlFor={storeInstanceID+"search"}>Search</label>
+        {children}
+        {/* <label htmlFor={storeInstanceID+"search"}>Search</label>
         <GridSearch />
         <GridHeader headers={headers} />
-        <GridFooter />
+        <GridRows tableHeight={tableHeight} />
+        <GridFooter /> */}
       </div>
     );
   }

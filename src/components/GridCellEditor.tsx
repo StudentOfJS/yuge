@@ -1,5 +1,5 @@
-import { ChangeEvent, type InputHTMLAttributes, useMemo, useState } from "react"
-import { useFocusWithin } from 'react-aria'
+import { ChangeEvent, useMemo, useState } from "react"
+import { useFocusWithin } from '@react-aria/interactions'
 import { useGridStores } from "../hooks/useGridStores"
 import { storeInstanceID } from "./Grid"
 import { GridColumnInit } from "../state/gridStore"

@@ -9,9 +9,9 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
+    "@react-aria/interactions": "^3.25.0",
     "@tanstack/react-virtual": "^3.13.6",
     "react": "^19.1.0",
-    "react-aria": "^3.39.0",
     "react-dom": "^19.1.0",
     "zustand": "^5.0.3"
   },
