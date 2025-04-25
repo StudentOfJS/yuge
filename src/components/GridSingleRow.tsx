@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { Fragment, memo, useMemo } from "react";
 import { useGridStores } from "../hooks/useGridStores";
 import { storeInstanceID } from "./Grid";
 import GridCell from "./GridCell";
@@ -20,8 +20,8 @@ function GridSingleRow({rowIndex}: GridSingleRowProps) {
             {
                 columns.map(col => {
                     let maxWidth = columnWidths[col.fieldName] ?? '100%'
-                    let className = columnWidths[col.fieldName] ? 'w-full' : 'flex-grow'
-                    return (<GridCell cellClassName={className} column={col} maxWidth={maxWidth} rowIndex={rowIndex} />)
+                    let className = `min-h-12 ${columnWidths[col.fieldName] ? 'w-full' : 'flex-grow'}`
+                    return (<Fragment key={col.fieldName}><GridCell cellClassName={className} column={col} maxWidth={maxWidth} rowIndex={rowIndex} /></Fragment>)
                 })
             }
         </>

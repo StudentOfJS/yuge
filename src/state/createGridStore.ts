@@ -46,6 +46,7 @@ export const createGridStore = <T extends Record<string, any>>() => {
         gridStore.init(columns, data);
         
         set({
+          isReady: true,
           columns,
           totalRows: data.length,
           visibleRows: gridStore.getVisibleRows(),

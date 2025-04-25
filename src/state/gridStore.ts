@@ -1,16 +1,16 @@
-import { type InputHTMLAttributes } from "react";
+import { HTMLInputTypeAttribute, type InputHTMLAttributes } from "react";
 
 export type GridCellValue = string | boolean | undefined; // date value must be ms since epoch
-export type GridCellType = 'date' | 'text' | 'number' | 'select' | 'checkbox';
 export type GridColumnInit = {
     displayName: string;
-    cellType: GridCellType;
+    cellType: HTMLInputTypeAttribute
     fieldName: string;
     isEditable?: true;
     isSearchable?: true;
     isSortable?: true;
     selectsRow?: true;
     inputProps?: Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'onChange'>
+    displayClassName?: string
     cellValidator?: (value: string) => boolean
     displayValueTransformer?: (value: string) => string
 }
@@ -29,20 +29,17 @@ export class GridStore<T extends Record<string, any>> {
     private sortDirection: GridSortDirection = null;
     private updateSortCache(fieldName: string): void {
         const column = this.columnArray.find(col => col.fieldName === fieldName);
-
         if (!column?.isSortable) return;
-
         // Get the default row indices
         const defaultIndices = this.preSortCache.get('default') || [];
-
         // Curry column sort function
-        const colSort = (cellType: GridCellType, col: string) => (indexA?: number, indexB?: number) => {
+        const colSort = (cellType: HTMLInputTypeAttribute, col: string) => (indexA?: number, indexB?: number) => {
             let a = this.cells.get(`${indexA}-${col}`);
             let b = this.cells.get(`${indexB}-${col}`);
             if (!a && !b) return 0;
             if (!a) return -1;
             if (!b) return 1;
-            if (cellType === 'number' || cellType === 'date') {
+            if (cellType === 'number') {
                 return Number(a) - Number(b);
             }
             return String(a).localeCompare(String(b));
@@ -81,11 +78,11 @@ export class GridStore<T extends Record<string, any>> {
                 this.cells.set(cellID, cellValue);
             })
             this.rows.push(defaultRowIndex);
-            this.rowQueryLookup.add(search + "-" + defaultRowIndex);
+            this.rowQueryLookup.add(defaultRowIndex + "+" + search);
         })
         // create sort cache upfront
         // curry column sort
-        const colSort = (cellType: GridCellType, col: string) => (indexA?: number, indexB?: number) => {
+        const colSort = (cellType: HTMLInputTypeAttribute, col: string) => (indexA?: number, indexB?: number) => {
             let a = this.cells.get(`${indexA}-${col}`);
             let b = this.cells.get(`${indexB}-${col}`);
             if (!a && !b) return 0;
@@ -112,7 +109,6 @@ export class GridStore<T extends Record<string, any>> {
         const sort = (this.sortBy && this.sortDirection) ? `${String(this.sortBy)}-${String(this.sortDirection)}` : 'default';
         const sortedRows = this.preSortCache.get(sort);
         if (!sortedRows) return; // Early return if no rows available
-
         const normalizedQuery = query?.toLowerCase().trim();
         this.searchQuery = normalizedQuery;
 
@@ -124,10 +120,8 @@ export class GridStore<T extends Record<string, any>> {
 
         // Find matching rows
         const matches = new Set<number>();
-        Array.from(this.rowQueryLookup.values())
-            .filter(key => key.includes(normalizedQuery))
-            .forEach(term => matches.add(Number(term.slice(term.indexOf("-") + 1))));
-
+        let filteredValues =  Array.from(this.rowQueryLookup.values()).filter(key => key.includes(normalizedQuery))
+        filteredValues.forEach(term => matches.add(Number(term.slice(0, term.indexOf("+")))));
         // Apply filter while preserving sort order
         this.rows = sortedRows.filter(rowIndex => matches.has(rowIndex));
     }

@@ -16,14 +16,14 @@ function GridRows({ tableHeight }: GridRowsProps) {
     count: visibleRows.length,
     getItemKey: (index: number) => visibleRows[index],
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 35, // Estimated row height - add way to instantiate this
+    estimateSize: () => 60, // Estimated row height - add way to instantiate this
     overscan: 5, // Number of items to render outside of view - and this
     });
 
     return (
         <div 
         ref={parentRef}
-        className="virtual-table-body"
+        className="w-full"
         style={{
           height: tableHeight, // Fixed height container
           overflow: 'auto', // Enable scrolling
@@ -41,14 +41,11 @@ function GridRows({ tableHeight }: GridRowsProps) {
           {rowVirtualizer.getVirtualItems().map(virtualRow => {
             return (
               <div
+                className="flex w-full absolute top-0 left-0"
                 key={virtualRow.key}
                 data-index={virtualRow.index}
                 ref={rowVirtualizer.measureElement}
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
                   height: `${virtualRow.size}px`,
                   transform: `translateY(${virtualRow.start}px)`,
                 }}

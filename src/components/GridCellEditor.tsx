@@ -2,7 +2,7 @@ import { ChangeEvent, useMemo, useState } from "react"
 import { useFocusWithin } from '@react-aria/interactions'
 import { useGridStores } from "../hooks/useGridStores"
 import { storeInstanceID } from "./Grid"
-import { GridColumnInit } from "../state/gridStore"
+import { type GridColumnInit } from "../state/gridStore"
 
 type GridCellEditorProps = {
   column: GridColumnInit
@@ -16,31 +16,34 @@ function GridCellEditor({
 }: GridCellEditorProps) {
   const { useGridStore } = useMemo(() => useGridStores(storeInstanceID), [storeInstanceID])
   const { getCellValue, updateCell } = useGridStore()
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false)
+  const [isValidChange, setIsValidChange] = useState(false)
   const [value, setValue] = useState<string>(() => getCellValue(rowIndex, column.fieldName))
   const [cellStateStyle, setCellStateStyle] = useState<string>("")
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setValue(e.target.value)
+    if(e.target.value === getCellValue(rowIndex, column.fieldName)) {
+      setCellStateStyle("")
+      setIsValidChange(false)
+    } else {
+      let isValid = column?.cellValidator ? column.cellValidator(value) : true;
+      setIsValidChange(isValid)
+      setCellStateStyle(isValid ? " outline-none inset-ring-2 inset-ring-lime-600/80" : " inset-ring-2 inset-ring-red-700/50")
+    }
   }
 
   // Focus management
   const { focusWithinProps } = useFocusWithin({
     onFocusWithin: () => {
-      setIsEditing(true);
-      setCellStateStyle(" outline outline-sky-700")
+      setIsEditing(true)
     },
     onBlurWithin: () => {
-      if (value !== getCellValue(rowIndex, column.fieldName)) {
-        // if validation fails
-        if(column.cellValidator && !column.cellValidator(value)) {
-          setCellStateStyle(" outline outline-red-700")
-          return;
-        }
+      if (isValidChange) {
         updateCell(rowIndex, column.fieldName, value)
-        setCellStateStyle(" outline outline-lime-600")
+        setCellStateStyle("")
       }
-      setIsEditing(false);
+      setIsEditing(false)
     },
   });
 
@@ -48,19 +51,18 @@ function GridCellEditor({
     <div
       {...focusWithinProps}
       tabIndex={0}
-      className={"flex-auto"+cellStateStyle}
+      className={"flex-auto w-full h-full rounded-sm"+cellStateStyle}
     >
       {isEditing && (
         <input
           autoFocus
           defaultValue={value}
           onChange={handleChange}
-          className="bg-transparent w-full h-full"
           {...column.inputProps}
         />
       )}
       {!isEditing && (
-        <div className="flex items-center justify-center gap-8  w-full h-full">
+        <div className={column?.displayClassName ?? "flex items-center gap-8  w-full h-full pl-4"}>
           {column.displayValueTransformer ? column.displayValueTransformer(value) : value}
           <button
             className="size-4"

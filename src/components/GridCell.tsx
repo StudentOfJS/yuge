@@ -40,7 +40,7 @@ function GridCell({
 
   return (
     <div className={cellClassName} style={{maxWidth}}>
-      <GridCellTextOnly fieldName={column.fieldName} rowIndex={rowIndex} />
+      <GridCellTextOnly column={column} rowIndex={rowIndex} />
     </div>
   )
 }

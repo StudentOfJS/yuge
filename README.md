@@ -12,6 +12,19 @@ We all love a good table or grid, right? Me neither, so I decided to make one th
 - [Zustand](https://github.com/pmndrs/zustand) - The best state management library for React 😍.
 - [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html) - I ❤️ react-spectrum for a11y but undecided to only include @react-aria/interactions to keep the bundle size down 🤓
 
+## Todo list
+1. Fix column resizer
+2. Update cached sort if effected by cell change
+3. Styling / make more user configurable
+4. Add keyboard navigation
+5. Add valdation alerts for screen readers
+6. Add aria table markup for a11y
+7. Add checkbox cell component
+8. Add select cell component
+9. Configure selected rows and select all rows functionality
+10. Add tests
+n.b. considering either replacing zustand with useSyncExternalStore implementation or moving more state to zustand with slices + persistance options.
+
 ## Important note
 If you happen to find this prior to it becoming a package just ignore it. 
 (What am I talking about, nobody is going to stumble upon the random profile of a Dev who spends his working life committing into the obscurity of AWS codecommit)

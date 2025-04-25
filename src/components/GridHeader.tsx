@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useGridStores } from "../hooks/useGridStores";
 import { storeInstanceID } from "./Grid";
 
@@ -13,10 +13,10 @@ function GridHeader({headers}: GridHeaderProps) {
     const { containerWidth } = useResizeStore()
 
     return (
-            <div className="relative" style={{width: containerWidth}}>
+            <div className="flex w-full" style={{width: containerWidth}}>
             {
             headers.map(header => (
-                <ColumnHead column={header} />
+                <Fragment key={header.fieldName}><ColumnHead column={header} /></Fragment>
             ))
             }
         </div>

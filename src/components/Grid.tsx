@@ -1,14 +1,16 @@
 import { useMemo, useRef, useEffect, ReactElement } from "react";
 import { useGridStores } from "../hooks/useGridStores";
-import { type GridColumnInit } from "../state/gridStore";
-import { type ColumnConfig } from "../state/columnResizeManager";
 import { idGenerator } from "../utils";
 
+import { type GridColumnInit } from "../state/gridStore";
+import { type ColumnConfig } from "../state/columnResizeManager";
+import "../style/index.css"
+
 type GridProps = {
-    children: ReactElement
-    columns: Array<ColumnConfig>;
+    children: ReactElement | Array<ReactElement>
+    defaultColumnSizes: Array<ColumnConfig>;
     headers: Array<GridColumnInit>;
-    data?: any;
+    data?: Record<string, any>[];
     optionalEndpoint?: {url:string, options?: RequestInit};
 }
 
@@ -16,7 +18,7 @@ export const storeInstanceID = idGenerator.generate();
 
 function Grid({
     children,
-    columns,
+    defaultColumnSizes,
     headers,
     data,
     optionalEndpoint,
@@ -30,7 +32,8 @@ function Grid({
     // Use the stores
     const { 
       initializeGrid,
-      fetchData
+      fetchData,
+      isReady
     } = useGridStore();
     
     const { 
@@ -64,22 +67,19 @@ function Grid({
 
       // Setup column widths
       useEffect(() => {
-        if (columns) {
-          initializeColumns(columns, containerRef.current?.clientWidth || 1000);
+        if (defaultColumnSizes) {
+          initializeColumns(defaultColumnSizes, containerRef.current?.clientWidth || 1000);
         }
-      }, [columns, initializeColumns]);
+      }, [defaultColumnSizes, initializeColumns]);
     
     return (
       <div
         className="w-full"
         ref={containerRef}
       >
-        {children}
-        {/* <label htmlFor={storeInstanceID+"search"}>Search</label>
-        <GridSearch />
-        <GridHeader headers={headers} />
-        <GridRows tableHeight={tableHeight} />
-        <GridFooter /> */}
+        {
+          isReady && children
+        }
       </div>
     );
   }
