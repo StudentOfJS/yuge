@@ -1,20 +1,19 @@
 import { useGridSearch } from "../hooks/useGridSearch"
-
+import { storeInstanceID } from "./Grid"
 import { type InputHTMLAttributes } from "react"
 
-interface GridSearchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'id' | 'type' | 'onChange' > {
-    id: string;
-}
 
-function GridSearch({id, ...inputProps}: GridSearchProps) {
-    const { query, handleSearch } = useGridSearch(id)
+type GridSearchProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'type' | 'onChange' >
+
+function GridSearch(props: GridSearchProps) {
+    const { query, handleSearch } = useGridSearch(storeInstanceID)
     return (
         <input
-            type="text"
+            type="search"
+            name="search"
             value={query}
             onChange={handleSearch}
-            id={id+"-search"}
-            {...inputProps}
+            {...props}
         />
     )
 }

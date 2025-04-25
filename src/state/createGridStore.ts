@@ -3,6 +3,8 @@ import { type GridColumnInit, type GridSortBy, type GridSortDirection, GridStore
 
 // Store state
 interface GridState<T extends Record<string, any>> {
+  columns: GridColumnInit[];
+  totalRows: number;
   gridStore: GridStore<T>;
   visibleRows: number[];
   selectedRows: number[];
@@ -29,6 +31,8 @@ interface GridState<T extends Record<string, any>> {
 export const createGridStore = <T extends Record<string, any>>() => {
   const gridStoreInstance = new GridStore<T>();
   return create<GridState<T>>((set, get) => ({
+    columns: [],
+    totalRows: 0,
     gridStore: gridStoreInstance,
     visibleRows: [],
     selectedRows: [],
@@ -42,6 +46,8 @@ export const createGridStore = <T extends Record<string, any>>() => {
         gridStore.init(columns, data);
         
         set({
+          columns,
+          totalRows: data.length,
           visibleRows: gridStore.getVisibleRows(),
           selectedRows: gridStore.getSelectedRows(),
           sortState: gridStore.getSortState(),

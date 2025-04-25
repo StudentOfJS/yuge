@@ -1,3 +1,5 @@
+import { type InputHTMLAttributes } from "react";
+
 export type GridCellValue = string | boolean | undefined; // date value must be ms since epoch
 export type GridCellType = 'date' | 'text' | 'number' | 'select' | 'checkbox';
 export type GridColumnInit = {
@@ -8,6 +10,9 @@ export type GridColumnInit = {
     isSearchable?: true;
     isSortable?: true;
     selectsRow?: true;
+    inputProps?: Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'onChange'>
+    cellValidator?: (value: string) => boolean
+    displayValueTransformer?: (value: string) => string
 }
 export type GridSortBy<S> = keyof S | null;
 export type GridSortDirection = 'asc' | 'dsc' | null;
