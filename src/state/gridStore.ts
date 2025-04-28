@@ -11,6 +11,7 @@ export type GridColumnInit = {
     selectsRow?: true;
     inputProps?: Omit<InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'onChange'>
     displayClassName?: string
+    width?: number;
     cellValidator?: (value: string) => boolean
     displayValueTransformer?: (value: string) => string
 }

@@ -3,6 +3,7 @@ import { type GridColumnInit, type GridSortBy, type GridSortDirection, GridStore
 
 // Store state
 interface GridState<T extends Record<string, any>> {
+  allSelected: boolean;
   columns: GridColumnInit[];
   totalRows: number;
   gridStore: GridStore<T>;
@@ -18,7 +19,7 @@ interface GridState<T extends Record<string, any>> {
   sortBy: (field: string, direction: 'asc' | 'dsc' | null) => void;
   search: (query: string) => void;
   selectRow: (rowIndex: number, selected: boolean) => void;
-  toggleRowSelection: (rowIndex: number) => void;
+  toggleRowSelection: (rowIndex?: number) => void;
   getCellValue: (rowIndex: number, fieldName: string) => any;
   fetchData: <R = T>(
     columns: GridColumnInit[], 
@@ -31,6 +32,7 @@ interface GridState<T extends Record<string, any>> {
 export const createGridStore = <T extends Record<string, any>>() => {
   const gridStoreInstance = new GridStore<T>();
   return create<GridState<T>>((set, get) => ({
+    allSelected: false,
     columns: [],
     totalRows: 0,
     gridStore: gridStoreInstance,
@@ -93,10 +95,15 @@ export const createGridStore = <T extends Record<string, any>>() => {
     },
     
     toggleRowSelection: (rowIndex) => {
-      const { gridStore } = get();
-      gridStore.toggleRowSelection(rowIndex);
-      
+      const { allSelected, gridStore, selectedRows, visibleRows } = get();
+      if(rowIndex) {
+        gridStore.toggleRowSelection(rowIndex);
+      } else {
+        gridStore.selectAllVisible(!allSelected)
+      }
+
       set({
+        allSelected: selectedRows.length === visibleRows.length,
         selectedRows: gridStore.getSelectedRows()
       });
     },

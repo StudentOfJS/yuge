@@ -3,45 +3,26 @@ import GridFooter from './components/GridFooter';
 import GridHeader from './components/GridHeader';
 import GridRows from './components/GridRows';
 import GridSearch from './components/GridSearch';
-import { ColumnConfig } from './state/columnResizeManager';
 import { type GridColumnInit } from './state/gridStore';
 
-const headers: Array<GridColumnInit> = [
-  // {
-  //   displayName: "",
-  //   cellType: 'checkbox',
-  //   fieldName: 'select_row',
-  //   isEditable: true,
-  //   selectsRow: true,
-  //   inputProps: { className: "my checkbox style" }
-  // },
-//   {
-//     displayName: "Time",
-//     cellType: 'time',
-//     fieldName: 'date_test',
-//     isEditable: true,
-//     isSearchable: true,
-//     isSortable: false,
-//     selectsRow: false,
-//     inputProps: {type: 'date', },
-//     cellValidator: (value: string) => boolean
-//     displayValueTransformer: (value: string) =>  new Date(value).toLocaleDateString('en-AU')
-// },
+const columns: Array<GridColumnInit> = [
   {
-      displayName: "Date",
-      cellType: 'date',
-      fieldName: 'date_test',
-      isEditable: true,
-      isSearchable: true,
-      inputProps: {type: 'date', min: "2025-04-01", max: "2028-04-30", className: "bg-transparent w-full h-full pl-4 outline-none"},
-      displayValueTransformer: (value: string) =>  new Date(value).toLocaleDateString('en-AU')
+    displayName: "Date",
+    cellType: 'date',
+    fieldName: 'date_test',
+    isEditable: true,
+    isSearchable: true,
+    inputProps: { type: 'date', min: "2025-04-01", max: "2028-04-30", className: "bg-transparent w-full h-full pl-4 outline-none" },
+    displayValueTransformer: (value: string) => new Date(value).toLocaleDateString('en-AU'),
+    displayClassName: "flex-auto flex items-center justify-between px-8 w-full h-full",
   },
   {
     displayName: "Time",
     cellType: 'time',
     fieldName: 'time_test',
     isEditable: true,
-    inputProps: {type: 'time', min: "08:00", max: "17:30", className: "bg-transparent w-full h-full pl-4 outline-none"}
+    inputProps: { type: 'time', min: "08:00", max: "17:30", className: "bg-transparent w-full h-full pl-4 outline-none" },
+    displayClassName: "flex-auto flex items-center justify-between px-8 w-full h-full",
   },
   {
     displayName: "Name",
@@ -49,7 +30,7 @@ const headers: Array<GridColumnInit> = [
     fieldName: 'text_test',
     isSearchable: true,
     isSortable: true,
-    displayClassName: "flex-auto flex items-center w-full h-full p-4"
+    displayClassName: "flex-auto flex items-center justify-between px-8 w-full h-full",
   },
   {
     displayName: "Email",
@@ -58,42 +39,12 @@ const headers: Array<GridColumnInit> = [
     isEditable: true,
     isSearchable: true,
     isSortable: true,
-    inputProps: {type: 'email', pattern: '.+@example\.com', placeholder: 'test@gridlock.com',className: "bg-transparent w-full h-full pl-4 outline-none"},
-    displayClassName: "flex-auto flex items-center justify-between w-full h-full p-4",
-    cellValidator: (value: string) => (new RegExp(/^\w+@\w+\.\w+$/)).test(value)
+    inputProps: { type: 'email', pattern: '.+@example\.com', placeholder: 'test@gridlock.com', className: "bg-transparent w-full h-full pl-4 outline-none" },
+    displayClassName: "flex-auto flex items-center justify-between px-2 w-full h-full",
+    cellValidator: (value: string) => (new RegExp(/^\w+@\w+\.\w+$/)).test(value),
   },
 ]
 
-const defaultColumnSizes: Array<ColumnConfig> = [
-  {
-    fieldName: 'date_test',
-    width: 200,
-    minWidth: 50,
-    maxWidth: 250,
-    flex: 200, 
-  },
-  {
-    fieldName: 'time_test',
-    width: 200,
-    minWidth: 50,
-    maxWidth: 250,
-    flex: 1, 
-  },
-  {
-    fieldName: 'text_test',
-    width: 200,
-    minWidth: 100,
-    maxWidth: 4000,
-    flex: 200, 
-  },
-  {
-    fieldName: 'email_test',
-    width: 200,
-    minWidth: 100,
-    maxWidth: 250,
-    flex: 200, 
-  },
-]
 
 const App = () => {
   const data = [
@@ -983,16 +934,22 @@ const App = () => {
   ]
 
   return (
-    <div className="grid">
-      <Grid defaultColumnSizes={defaultColumnSizes} headers={headers} data={data}>
-        <label>
-          Search
-          <GridSearch />
-        </label>
-        <GridHeader headers={headers} />
-        <GridRows tableHeight={500} />
-        <GridFooter />
-      </Grid>
+    <div className="font-lex flex items-center justify-center h-screen w-screen">
+      <div className='max-w-4xl w-full'>
+        <Grid columns={columns} data={data}>
+          <label className='block pb-4'>
+            <div className='font-semibold'>
+              Search
+            </div>
+            <GridSearch
+              placeholder='search by name or email'
+              className='py-2 px-4 inset-ring inset-ring-gray-300 rounded-md placeholder:text-gray-500 placeholder:italic placeholder:text-sm' />
+          </label>
+          <GridHeader columns={columns} />
+          <GridRows tableHeight={500} />
+          <GridFooter />
+        </Grid>
+      </div>
     </div>
   );
 };

@@ -1,1 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+
 @import 'tailwindcss';
+
+@theme {
+  --font-lex: "Lexend", sans-serif; 
+}
+
+/* Hide the range track */
+input[type="range"].column-divider {
+    -webkit-appearance: none;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: col-resize;
+  }
+  
+  /* Hide the range track in different browsers */
+  input[type="range"].column-divider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+  }
+  
+  input[type="range"].column-divider::-moz-range-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+  }
+  
+  input[type="range"].column-divider::-ms-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: transparent;
+  }
+  
+  /* Custom thumb styling */
+  input[type="range"].column-divider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 6px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 0;
+    transition: background 0.2s;
+  }
+  
+  input[type="range"].column-divider::-moz-range-thumb {
+    width: 6px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 0;
+    transition: background 0.2s;
+  }
+  
+  input[type="range"].column-divider::-ms-thumb {
+    width: 6px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 0;
+    transition: background 0.2s;
+  }
+  
+  /* Hover state */
+  input[type="range"].column-divider:hover::-webkit-slider-thumb {
+    background: rgba(59, 130, 246, 0.5); /* Tailwind blue-500 */
+  }
+  
+  input[type="range"].column-divider:hover::-moz-range-thumb {
+    background: rgba(59, 130, 246, 0.5);
+  }
+  
+  input[type="range"].column-divider:hover::-ms-thumb {
+    background: rgba(59, 130, 246, 0.5);
+  }
+  
+  /* Active state */
+  input[type="range"].column-divider:active::-webkit-slider-thumb {
+    background: rgba(59, 130, 246, 0.9);
+    width: 8px;
+  }
+  
+  input[type="range"].column-divider:active::-moz-range-thumb {
+    background: rgba(59, 130, 246, 0.9);
+    width: 8px;
+  }
+  
+  input[type="range"].column-divider:active::-ms-thumb {
+    background: rgba(59, 130, 246, 0.9);
+    width: 8px;
+  }

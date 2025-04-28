@@ -13,16 +13,14 @@ We all love a good table or grid, right? Me neither, so I decided to make one th
 - [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html) - I ❤️ react-spectrum for a11y but undecided to only include @react-aria/interactions to keep the bundle size down 🤓
 
 ## Todo list
-1. Fix column resizer
-2. Update cached sort if effected by cell change
-3. Styling / make more user configurable
-4. Add keyboard navigation
-5. Add valdation alerts for screen readers
-6. Add aria table markup for a11y
-7. Add checkbox cell component
-8. Add select cell component
-9. Configure selected rows and select all rows functionality
-10. Add tests
+1. Fix column resizer - 😭 fixed and then broke it with updates to the point of having to park it
+2. Add keyboard navigation
+3. Add valdation alerts for screen readers
+4. Add aria table markup for a11y
+5. Add checkbox cell component
+6. Add select cell component
+7. Configure selected rows and select all rows functionality
+8. Add tests
 n.b. considering either replacing zustand with useSyncExternalStore implementation or moving more state to zustand with slices + persistance options.
 
 ## Important note

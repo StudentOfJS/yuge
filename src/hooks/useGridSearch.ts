@@ -1,12 +1,8 @@
-import { ChangeEvent, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { useGridStores } from "./useGridStores";
+import { ChangeEvent, useDeferredValue, useEffect, useState } from "react";
+import { useGridStore } from "../components/Grid";
 
-export function useGridSearch(id: string) {
-    const { useGridStore } = useMemo(
-        () => useGridStores(id), 
-        [id]
-      );
-    const { search } = useGridStore();
+export function useGridSearch() {
+    const search = useGridStore(state => state.search)
     const [query, setQuery] = useState("");
     const searchTerm = useDeferredValue(query);
     const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {

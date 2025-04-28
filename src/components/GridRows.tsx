@@ -1,8 +1,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useMemo, useRef } from "react";
-import { useGridStores } from "../hooks/useGridStores";
-import { storeInstanceID } from "./Grid";
+import { useRef } from "react";
 import GridSingleRow from "./GridSingleRow";
+import { useGridStore } from "./Grid";
 
 type GridRowsProps = {
     tableHeight: number
@@ -10,8 +9,7 @@ type GridRowsProps = {
 
 function GridRows({ tableHeight }: GridRowsProps) {
     const parentRef = useRef<HTMLDivElement>(null);
-    const { useGridStore } = useMemo(() => useGridStores(storeInstanceID), [storeInstanceID])
-    const { visibleRows } = useGridStore()
+    const visibleRows = useGridStore(state => state.visibleRows)
     const rowVirtualizer = useVirtualizer({
     count: visibleRows.length,
     getItemKey: (index: number) => visibleRows[index],
@@ -41,7 +39,7 @@ function GridRows({ tableHeight }: GridRowsProps) {
           {rowVirtualizer.getVirtualItems().map(virtualRow => {
             return (
               <div
-                className="flex w-full absolute top-0 left-0"
+                className="flex w-full absolute top-0 left-0 border-collapse border border-gray-400"
                 key={virtualRow.key}
                 data-index={virtualRow.index}
                 ref={rowVirtualizer.measureElement}

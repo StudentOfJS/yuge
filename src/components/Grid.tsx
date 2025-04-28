@@ -1,81 +1,74 @@
-import { useMemo, useRef, useEffect, ReactElement } from "react";
-import { useGridStores } from "../hooks/useGridStores";
-import { idGenerator } from "../utils";
+import { useRef, useEffect, ReactElement } from "react";
 
 import { type GridColumnInit } from "../state/gridStore";
-import { type ColumnConfig } from "../state/columnResizeManager";
 import "../style/index.css"
+import { createResizeStore } from "../state/createResizeStore";
+import { createGridStore } from "../state/createGridStore";
 
 type GridProps = {
     children: ReactElement | Array<ReactElement>
-    defaultColumnSizes: Array<ColumnConfig>;
-    headers: Array<GridColumnInit>;
+    columns: Array<GridColumnInit>;
     data?: Record<string, any>[];
     optionalEndpoint?: {url:string, options?: RequestInit};
+    className?: string
 }
 
-export const storeInstanceID = idGenerator.generate();
+export const useResizeStore = createResizeStore()
+export const useGridStore = createGridStore()
 
 function Grid({
     children,
-    defaultColumnSizes,
-    headers,
+    columns,
     data,
     optionalEndpoint,
+    className
   }: GridProps) {
-    // Get stores for this grid instances
-    const { useGridStore, useResizeStore } = useMemo(
-      () => useGridStores(storeInstanceID), 
-      [storeInstanceID]
-    );
-    
     // Use the stores
-    const { 
-      initializeGrid,
-      fetchData,
-      isReady
-    } = useGridStore();
-    
-    const { 
-      initializeColumns,
-      updateContainerWidth
-    } = useResizeStore();
+    const isReady = useGridStore(state => state.isReady)
+    const initializeGrid = useGridStore(state => state.initializeGrid)
+    const fetchData = useGridStore(state => state.fetchData)
+    const initializeColumns = useResizeStore(state => state.initializeColumns);
+    const updateContainerWidth = useResizeStore(state => state.updateContainerWidth);
     
     // Measure container width
-    const containerRef = useRef<HTMLDivElement>(null);
-    
-    useEffect(() => {
-      if (containerRef.current) {
-        const width = containerRef.current.clientWidth;
-        updateContainerWidth(width);
-      }
-    }, [updateContainerWidth]);
-    
-    // Initialize when data and headers are available
-    useEffect(() => {
-      if (data && headers) {
-        initializeGrid(headers, data);
-      }
-    }, [data, headers]);
+    const gridRef = useRef<HTMLDivElement>(null);
 
-    // Fetch and initialize data if optionalEndpoint and headers are available
+    // Initialize when data and columns are available
     useEffect(() => {
-        if (optionalEndpoint && headers) {
-            fetchData(headers, optionalEndpoint.url, optionalEndpoint.options);
+      if (data && columns) {
+        initializeGrid(columns, data);
+      }
+    }, [data, columns]);
+
+    // Fetch and initialize data if optionalEndpoint and columns are available
+    useEffect(() => {
+        if (optionalEndpoint && columns) {
+            fetchData(columns, optionalEndpoint.url, optionalEndpoint.options);
         }
-      }, [optionalEndpoint, headers, fetchData]);
+      }, [optionalEndpoint, columns, fetchData]);
 
-      // Setup column widths
+      // Initialize columns on mount and when container size changes
       useEffect(() => {
-        if (defaultColumnSizes) {
-          initializeColumns(defaultColumnSizes, containerRef.current?.clientWidth || 1000);
+        if (gridRef.current) {
+          const { width } = gridRef.current.getBoundingClientRect();
+          initializeColumns(columns, width);
+          
+          // Set up resize observer
+          const resizeObserver = new ResizeObserver(entries => {
+            const { width } = entries[0].contentRect;
+            updateContainerWidth(width);
+          });
+          
+          resizeObserver.observe(gridRef.current);
+          return () => resizeObserver.disconnect();
         }
-      }, [defaultColumnSizes, initializeColumns]);
+      }, [columns]);
+
     
     return (
       <div
-        className="w-full"
-        ref={containerRef}
+        className={className ?? "w-full overflow-auto p-6"}
+        ref={gridRef}
       >
         {
           isReady && children

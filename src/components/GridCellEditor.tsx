@@ -1,9 +1,8 @@
-import { ChangeEvent, useMemo, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { useFocusWithin } from '@react-aria/interactions'
-import { useGridStores } from "../hooks/useGridStores"
-import { storeInstanceID } from "./Grid"
-import { type GridColumnInit } from "../state/gridStore"
+import { useGridStore } from "./Grid"
 
+import { type GridColumnInit } from "../state/gridStore"
 type GridCellEditorProps = {
   column: GridColumnInit
   rowIndex: number
@@ -14,8 +13,9 @@ function GridCellEditor({
   column,
   rowIndex,
 }: GridCellEditorProps) {
-  const { useGridStore } = useMemo(() => useGridStores(storeInstanceID), [storeInstanceID])
-  const { getCellValue, updateCell } = useGridStore()
+
+  const getCellValue = useGridStore(state => state.getCellValue)
+  const updateCell = useGridStore(state => state.updateCell)
   const [isEditing, setIsEditing] = useState(false)
   const [isValidChange, setIsValidChange] = useState(false)
   const [value, setValue] = useState<string>(() => getCellValue(rowIndex, column.fieldName))
@@ -51,7 +51,7 @@ function GridCellEditor({
     <div
       {...focusWithinProps}
       tabIndex={0}
-      className={"flex-auto w-full h-full rounded-sm"+cellStateStyle}
+      className={"w-full h-full rounded-sm"+cellStateStyle}
     >
       {isEditing && (
         <input

@@ -1,10 +1,9 @@
-import { useMemo } from "react"
-import { useGridStores } from "../hooks/useGridStores"
-import { storeInstanceID } from "./Grid"
-// @todo think about data to display and display options
+import { useGridStore } from "./Grid"
+
 function GridFooter() {
-    const { useGridStore } = useMemo(() => useGridStores(storeInstanceID), [storeInstanceID])
-    const { selectedRows, visibleRows, totalRows } = useGridStore()
+    // const selectedRows = useGridStore(state => state.selectedRows)
+    const visibleRows = useGridStore(state => state.visibleRows)
+    const totalRows = useGridStore(state => state.totalRows)
     return (
         <div className="table-footer">
             {visibleRows.length} of {totalRows} items
