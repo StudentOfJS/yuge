@@ -1,9 +1,11 @@
 import { HTMLInputTypeAttribute, type InputHTMLAttributes } from "react";
 
-export type GridCellValue = string | boolean | undefined; // date value must be ms since epoch
+export type GridCellValue = string | boolean | number | undefined; // date value must be ms since epoch
+export type GridCellType = HTMLInputTypeAttribute | 'select' | 'checkbox';
+
 export type GridColumnInit = {
     displayName: string;
-    cellType: HTMLInputTypeAttribute
+    cellType: GridCellType // Updated type
     fieldName: string;
     isEditable?: true;
     isSearchable?: true;
@@ -14,6 +16,7 @@ export type GridColumnInit = {
     width?: number;
     cellValidator?: (value: string) => boolean
     displayValueTransformer?: (value: string) => string
+    selectOptions?: Array<{ value: string | number; label: string }>; // New property
 }
 export type GridSortBy<S> = keyof S | null;
 export type GridSortDirection = 'asc' | 'dsc' | null;
@@ -34,7 +37,7 @@ export class GridStore<T extends Record<string, any>> {
         // Get the default row indices
         const defaultIndices = this.preSortCache.get('default') || [];
         // Curry column sort function
-        const colSort = (cellType: HTMLInputTypeAttribute, col: string) => (indexA?: number, indexB?: number) => {
+        const colSort = (cellType: GridCellType, col: string) => (indexA?: number, indexB?: number) => {
             let a = this.cells.get(`${indexA}-${col}`);
             let b = this.cells.get(`${indexB}-${col}`);
             if (!a && !b) return 0;
@@ -83,7 +86,7 @@ export class GridStore<T extends Record<string, any>> {
         })
         // create sort cache upfront
         // curry column sort
-        const colSort = (cellType: HTMLInputTypeAttribute, col: string) => (indexA?: number, indexB?: number) => {
+        const colSort = (cellType: GridCellType, col: string) => (indexA?: number, indexB?: number) => {
             let a = this.cells.get(`${indexA}-${col}`);
             let b = this.cells.get(`${indexB}-${col}`);
             if (!a && !b) return 0;
