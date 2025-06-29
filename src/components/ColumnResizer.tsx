@@ -158,7 +158,7 @@ export const ColumnResizer: React.FC<ColumnResizerProps> = ({
   return (
     <div
       ref={resizerRef}
-      className="absolute top-0 right-0 h-full w-2 cursor-col-resize bg-gray-300 hover:bg-blue-500 active:bg-blue-600 z-10 touch-none" // Added touch-none for touch devices
+      className="absolute top-0 right-0 h-full w-1 cursor-col-resize bg-gray-300 hover:bg-blue-500 active:bg-blue-600 z-10 touch-none" // Added touch-none for touch devices
       style={{ transform: 'translateX(50%)' }} // Center the handle visually on the border
       onMouseDown={handleMouseDown}
       onKeyDown={handleKeyDown}
