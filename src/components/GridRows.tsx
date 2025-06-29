@@ -4,18 +4,20 @@ import GridSingleRow from "./GridSingleRow";
 import { useGridStore } from "./Grid";
 
 type GridRowsProps = {
+    rowHeight?: number
+    rowOverscan?: number
     tableHeight: number
 }
 
-function GridRows({ tableHeight }: GridRowsProps) {
+function GridRows({ rowHeight, rowOverscan, tableHeight }: GridRowsProps) {
     const parentRef = useRef<HTMLDivElement>(null);
     const visibleRows = useGridStore(state => state.visibleRows)
     const rowVirtualizer = useVirtualizer({
     count: visibleRows.length,
     getItemKey: (index: number) => visibleRows[index],
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 60, // Estimated row height - add way to instantiate this
-    overscan: 5, // Number of items to render outside of view - and this
+    estimateSize: () => rowHeight ?? 60, // Estimated row height - add way to instantiate this
+    overscan: rowOverscan ?? 5, // Number of items to render outside of view - and this
     });
 
     return (

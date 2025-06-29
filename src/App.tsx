@@ -945,7 +945,7 @@ const App = () => {
               placeholder='search by name or email'
               className='py-2 px-4 inset-ring inset-ring-gray-300 rounded-md placeholder:text-gray-500 placeholder:italic placeholder:text-sm' />
           </label>
-          <GridHeader columns={columns} />
+          <GridHeader />
           <GridRows tableHeight={500} />
           <GridFooter />
         </Grid>

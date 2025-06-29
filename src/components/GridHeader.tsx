@@ -4,9 +4,7 @@ import { useGridStore, useResizeStore } from './Grid';
 // Assuming GridColumn type is exported from createResizeStore, otherwise adjust import
 import { ColumnResizer } from './ColumnResizer';
 
-
-// Remove columns from props, get them from the store instead
-const GridHeader: React.FC = () => {
+const GridHeader = () => {
   const { sortState, sortBy } = useGridStore()
   const headerRef = useRef<HTMLDivElement>(null)
   // Select state pieces individually to prevent unnecessary re-renders
