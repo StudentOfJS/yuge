@@ -1,13 +1,11 @@
 import { useRef } from 'react';
 import { useGridStore, useResizeStore } from './Grid';
-// Use the type from the resize store which guarantees width exists
-// Assuming GridColumn type is exported from createResizeStore, otherwise adjust import
 import { ColumnResizer } from './ColumnResizer';
 
 const GridHeader = () => {
-  const { sortState, sortBy } = useGridStore()
+  const sortState = useGridStore(state => state.sortState)
+  const sortBy  = useGridStore(state => state.sortBy)
   const headerRef = useRef<HTMLDivElement>(null)
-  // Select state pieces individually to prevent unnecessary re-renders
   const columns = useResizeStore(state => state.columns);
   const gridTemplateColumns = useResizeStore(state => state.gridTemplateColumns);
   const isResizing = useResizeStore(state => state.isResizing);
@@ -18,10 +16,9 @@ const GridHeader = () => {
       style={{ gridTemplateColumns }}
       ref={headerRef}
     >
-      {/* Remove the old commented out block */}
       {columns.map((column, index) => (
         <div
-          key={`header-${column.fieldName}`} // Use fieldName for a more stable key
+          key={`header-${column.fieldName}`}
           // Add relative positioning context for the absolute resizer and manage borders
           className="relative px-4 py-2 font-semibold text-gray-700 border-r border-gray-300 last:border-r-0" // Use border-r for consistency
           // Add ID for ARIA accessibility
